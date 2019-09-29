@@ -12,6 +12,5 @@ public @interface AsyncExceptionMetered {
     String name() default "";
 
     String suffix() default "exception";
-
-
 }
+

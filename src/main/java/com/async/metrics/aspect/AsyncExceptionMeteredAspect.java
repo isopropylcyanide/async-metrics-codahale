@@ -26,6 +26,10 @@ public class AsyncExceptionMeteredAspect {
     @Inject
     private MetricRegistry metricRegistry;
 
+    public void setMetricRegistry(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
+    }
+
     @Pointcut("@annotation(com.async.metrics.annotation.AsyncExceptionMetered)")
     public void asyncExceptionMeteredAnnotatedMethods() {
     }

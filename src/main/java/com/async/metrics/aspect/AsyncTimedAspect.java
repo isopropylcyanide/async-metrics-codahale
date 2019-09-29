@@ -28,6 +28,10 @@ public class AsyncTimedAspect {
     public void asyncTimedAnnotatedMethods() {
     }
 
+    public void setMetricRegistry(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
+    }
+
     @Around("asyncTimedAnnotatedMethods()")
     public Object proceed(ProceedingJoinPoint joinPoint) throws Throwable {
         if (System.getProperty(Properties.ADVICE_DISABLED) != null) {
