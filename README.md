@@ -80,9 +80,20 @@ CompletableFuture<Integer> asyncMethodThatCompletesNormally() {
 #### Enhancements
 - Feel free to extend this to mark any custom metrics. All you need is an Annotation and the corresponding aspects
 - Instead of Codahale Metric Registry it can be extended to any registry
+- Instead of completable future, it can be any random callback. It's just that there should be a hook to execute action post callback resolution that doesn't block.
 
 
-
+#### Testing
+- Create a driver class with a new metric registry
+- Install the module
+- Set up a local Console reporter
+```
+ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
+       .convertRatesTo(TimeUnit.SECONDS)
+       .convertDurationsTo(TimeUnit.MILLISECONDS)
+       .build();
+   reporter.start(1, TimeUnit.SECONDS);
+```
 
 
 
