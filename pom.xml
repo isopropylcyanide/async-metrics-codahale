@@ -81,6 +81,7 @@
                 </configuration>
             </plugin>
 
+            <!--AspectJ weave plugin-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
