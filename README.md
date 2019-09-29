@@ -82,7 +82,7 @@ CompletableFuture<Integer> asyncMethodThatCompletesNormally() {
 - Instead of Codahale Metric Registry it can be extended to any registry
 - Instead of completable future, it can be any random callback. It's just that there should be a hook to execute action post callback resolution that doesn't block.
 
-
+---
 #### Testing
 - Create a driver class with a new metric registry
 - Install the module
