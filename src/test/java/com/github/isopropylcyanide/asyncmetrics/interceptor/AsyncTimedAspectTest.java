@@ -1,11 +1,22 @@
-package com.async.metrics.aspect;
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.github.isopropylcyanide.asyncmetrics.interceptor;
 
-import com.async.metrics.annotation.AsyncTimed;
-import com.async.metrics.constant.Properties;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
+import com.github.isopropylcyanide.asyncmetrics.annotation.AsyncTimed;
+import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,23 +40,14 @@ public class AsyncTimedAspectTest {
     private MetricRegistry metricRegistry;
 
     @Mock
-    private ProceedingJoinPoint joinPoint;
+    private MethodInvocation invocation;
 
-    private AsyncTimedAspect aspect;
+    private AsyncTimedInterceptor interceptor;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        this.aspect = new AsyncTimedAspect();
-        this.aspect.setMetricRegistry(metricRegistry);
-    }
-
-    @Test
-    public void testAdviceProceedsNormallyWhenSystemPropertyIsPresent() throws Throwable {
-        System.setProperty(Properties.ADVICE_DISABLED, "random");
-        aspect.proceed(joinPoint);
-        verify(joinPoint, times(1)).proceed();
-        System.clearProperty(Properties.ADVICE_DISABLED);
+        this.interceptor = new AsyncTimedInterceptor(metricRegistry);
     }
 
     @AsyncTimed(name = "N1")
@@ -58,23 +60,18 @@ public class AsyncTimedAspectTest {
 
     @Test
     public void testAdviceMarksMetricsWhenSystemPropertyIsNotPresentAndAnnotationHasName() throws Throwable {
-        Class declaringType = this.getClass();
-        MethodSignature methodSignature = mock(MethodSignature.class);
         Method method = this.getClass().getMethod("testMethodWithAnnotationWithName");
-
         Timer timer = mock(Timer.class);
         Timer.Context context = mock(Timer.Context.class);
 
-        when(joinPoint.getSignature()).thenReturn(methodSignature);
-        when(methodSignature.getDeclaringType()).thenReturn(declaringType);
-        when(methodSignature.getMethod()).thenReturn(method);
+        when(invocation.getMethod()).thenReturn(method);
         when(metricRegistry.timer(Mockito.contains("N1"))).thenReturn(timer);
         when(timer.time()).thenReturn(context);
 
-        when(joinPoint.proceed()).thenReturn(CompletableFuture.completedFuture("Done"));
-        CompletableFuture<String> proceed = (CompletableFuture) aspect.proceed(joinPoint);
+        when(invocation.proceed()).thenReturn(CompletableFuture.completedFuture("Done"));
+        CompletableFuture<String> proceed = (CompletableFuture) interceptor.invoke(invocation);
 
-        verify(joinPoint, times(1)).proceed();
+        verify(invocation, times(1)).proceed();
         verify(context, times(1)).stop();
         assertTrue(proceed.isDone());
         assertEquals("Done", proceed.get());
@@ -82,23 +79,18 @@ public class AsyncTimedAspectTest {
 
     @Test
     public void testAdviceMarksMetricsWhenSystemPropertyIsNotPresentAndAnnotationHasNoName() throws Throwable {
-        Class declaringType = this.getClass();
-        MethodSignature methodSignature = mock(MethodSignature.class);
         Method method = this.getClass().getMethod("testMethodWithAnnotationWithNoName");
-
         Timer timer = mock(Timer.class);
         Timer.Context context = mock(Timer.Context.class);
 
-        when(joinPoint.getSignature()).thenReturn(methodSignature);
-        when(methodSignature.getDeclaringType()).thenReturn(declaringType);
-        when(methodSignature.getMethod()).thenReturn(method);
+        when(invocation.getMethod()).thenReturn(method);
         when(metricRegistry.timer(Mockito.contains("testMethodWithAnnotationWithNoName"))).thenReturn(timer);
         when(timer.time()).thenReturn(context);
 
-        when(joinPoint.proceed()).thenReturn(CompletableFuture.completedFuture("Done"));
-        CompletableFuture<String> proceed = (CompletableFuture) aspect.proceed(joinPoint);
+        when(invocation.proceed()).thenReturn(CompletableFuture.completedFuture("Done"));
+        CompletableFuture<String> proceed = (CompletableFuture) interceptor.invoke(invocation);
 
-        verify(joinPoint, times(1)).proceed();
+        verify(invocation, times(1)).proceed();
         verify(context, times(1)).stop();
         assertTrue(proceed.isDone());
         assertEquals("Done", proceed.get());
