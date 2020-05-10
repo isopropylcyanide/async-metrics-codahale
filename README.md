@@ -32,10 +32,11 @@ This project is available on Maven Central. To add it to your project you can ad
 
 - Initialise the Module in your Guice Injector
 
-```java    
+```java
+    ...    
     MetricRegistry registry = new MetricRegistry();
     Guice.createInjector(new AsyncMetricsModule(metricRegistry));    
-}
+    ...
 ```
 
 - Annotate the required methods with the required annotation
