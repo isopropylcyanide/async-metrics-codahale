@@ -11,12 +11,14 @@ Leverage Codahale metrics (or any Metric Registry for that matter) to provide me
 This project is available on Maven Central. To add it to your project you can add the following dependency to your
 `pom.xml`:
 
+```xml
     <dependency>
         <groupId>com.github.isopropylcyanide</groupId>
         <artifactId>async-codahale-metrics</artifactId>
         <version>1.0</version>
      </dependency>
-
+```
+        
 ## Features
 
 | Annotation | Codahale Equivalent |
@@ -30,11 +32,9 @@ This project is available on Maven Central. To add it to your project you can ad
 
 - Initialise the Module in your Guice Injector
 
-```java
-    ...
+```java    
     MetricRegistry registry = new MetricRegistry();
-    Guice.createInjector(new AsyncMetricsModule(metricRegistry));
-    ...
+    Guice.createInjector(new AsyncMetricsModule(metricRegistry));    
 }
 ```
 
