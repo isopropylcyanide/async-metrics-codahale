@@ -23,7 +23,6 @@ import com.github.isopropylcyanide.asyncmetrics.interceptor.AsyncTimedIntercepto
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 
-@SuppressWarnings("WeakerAccess")
 public class AsyncMetricsModule extends AbstractModule {
 
     private final MetricRegistry metricRegistry;

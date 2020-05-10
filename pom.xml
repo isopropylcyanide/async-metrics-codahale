@@ -6,7 +6,7 @@
 
     <groupId>com.github.isopropylcyanide</groupId>
     <artifactId>async-codahale-metrics</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>Async Codahale Metrics</name>
     <description>Leverage metrics for asynchronously returning methods</description>
     <url>https://github.com/isopropylcyanide/async-metrics-codahale</url>
