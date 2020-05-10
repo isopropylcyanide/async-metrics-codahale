@@ -11,11 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.interceptor;
+package com.github.isopropylcyanide.asyncmetrics.interceptor;
 
-import com.async.metrics.annotation.AsyncMetered;
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.github.isopropylcyanide.asyncmetrics.annotation.AsyncTimed;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +28,13 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings({"unchecked", "WeakerAccess"})
-public class AsyncMeteredAspectTest {
+public class AsyncTimedAspectTest {
 
     @Mock
     private MetricRegistry metricRegistry;
@@ -43,36 +42,37 @@ public class AsyncMeteredAspectTest {
     @Mock
     private MethodInvocation invocation;
 
-    private AsyncMeteredInterceptor interceptor;
+    private AsyncTimedInterceptor interceptor;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        this.interceptor = new AsyncMeteredInterceptor(metricRegistry);
+        this.interceptor = new AsyncTimedInterceptor(metricRegistry);
     }
 
-    @AsyncMetered(name = "N1")
+    @AsyncTimed(name = "N1")
     public void testMethodWithAnnotationWithName() {
     }
 
-    @AsyncMetered
+    @AsyncTimed
     public void testMethodWithAnnotationWithNoName() {
     }
 
     @Test
     public void testAdviceMarksMetricsWhenSystemPropertyIsNotPresentAndAnnotationHasName() throws Throwable {
         Method method = this.getClass().getMethod("testMethodWithAnnotationWithName");
-        Meter meter = mock(Meter.class);
+        Timer timer = mock(Timer.class);
+        Timer.Context context = mock(Timer.Context.class);
 
         when(invocation.getMethod()).thenReturn(method);
-        when(metricRegistry.meter(Mockito.contains("N1"))).thenReturn(meter);
-        doNothing().when(meter).mark();
+        when(metricRegistry.timer(Mockito.contains("N1"))).thenReturn(timer);
+        when(timer.time()).thenReturn(context);
 
         when(invocation.proceed()).thenReturn(CompletableFuture.completedFuture("Done"));
         CompletableFuture<String> proceed = (CompletableFuture) interceptor.invoke(invocation);
 
         verify(invocation, times(1)).proceed();
-        verify(meter, times(1)).mark();
+        verify(context, times(1)).stop();
         assertTrue(proceed.isDone());
         assertEquals("Done", proceed.get());
     }
@@ -80,17 +80,18 @@ public class AsyncMeteredAspectTest {
     @Test
     public void testAdviceMarksMetricsWhenSystemPropertyIsNotPresentAndAnnotationHasNoName() throws Throwable {
         Method method = this.getClass().getMethod("testMethodWithAnnotationWithNoName");
-        Meter meter = mock(Meter.class);
+        Timer timer = mock(Timer.class);
+        Timer.Context context = mock(Timer.Context.class);
 
         when(invocation.getMethod()).thenReturn(method);
-        when(metricRegistry.meter(Mockito.contains("testMethodWithAnnotationWithNoName"))).thenReturn(meter);
-        doNothing().when(meter).mark();
+        when(metricRegistry.timer(Mockito.contains("testMethodWithAnnotationWithNoName"))).thenReturn(timer);
+        when(timer.time()).thenReturn(context);
 
         when(invocation.proceed()).thenReturn(CompletableFuture.completedFuture("Done"));
         CompletableFuture<String> proceed = (CompletableFuture) interceptor.invoke(invocation);
 
         verify(invocation, times(1)).proceed();
-        verify(meter, times(1)).mark();
+        verify(context, times(1)).stop();
         assertTrue(proceed.isDone());
         assertEquals("Done", proceed.get());
     }

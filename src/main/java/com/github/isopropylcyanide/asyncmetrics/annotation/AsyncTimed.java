@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.annotation;
+package com.github.isopropylcyanide.asyncmetrics.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

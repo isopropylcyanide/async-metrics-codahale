@@ -11,11 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.interceptor;
+package com.github.isopropylcyanide.asyncmetrics.interceptor;
 
-import com.async.metrics.annotation.AsyncExceptionMetered;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.github.isopropylcyanide.asyncmetrics.annotation.AsyncExceptionMetered;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;

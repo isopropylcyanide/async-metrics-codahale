@@ -11,15 +11,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.exception;
+package com.github.isopropylcyanide.asyncmetrics.module;
 
-/**
- * Every time the invocation of an asynchronous method returns an error, an exception of type
- * {@link AdvisedMethodException} will be thrown containing the root throwable.
- */
-public class AdvisedMethodException extends RuntimeException {
+import com.codahale.metrics.MetricRegistry;
+import com.google.inject.AbstractModule;
 
-    public AdvisedMethodException(String methodName, Throwable throwable) {
-        super(String.format("Exception in advised method: [%s] : [%s]", methodName, throwable.getMessage()), throwable);
+class ApplicationModule extends AbstractModule {
+
+    private final MetricRegistry metricRegistry;
+
+    ApplicationModule(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
+    }
+
+    @Override
+    protected void configure() {
+        install(new AsyncMetricsModule(metricRegistry));
     }
 }

@@ -11,11 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.interceptor;
+package com.github.isopropylcyanide.asyncmetrics.interceptor;
 
-import com.async.metrics.annotation.AsyncTimed;
+import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
+import com.github.isopropylcyanide.asyncmetrics.annotation.AsyncMetered;
 import com.google.inject.Singleton;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -25,30 +25,29 @@ import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 
 @Singleton
-public final class AsyncTimedInterceptor implements MethodInterceptor {
+public final class AsyncMeteredInterceptor implements MethodInterceptor {
 
     private final MetricRegistry metricRegistry;
 
-    public AsyncTimedInterceptor(MetricRegistry metricRegistry) {
+    public AsyncMeteredInterceptor(MetricRegistry metricRegistry) {
         this.metricRegistry = metricRegistry;
     }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         String metric = getMetricName(invocation);
-        Timer timer = metricRegistry.timer(metric);
-        Timer.Context context = timer.time();
+        Meter meter = metricRegistry.meter(metric);
 
         CompletableFuture future = (CompletableFuture) invocation.proceed();
-        future.thenRun(context::stop);
+        future.thenRun(meter::mark);
         return future;
     }
 
     private String getMetricName(MethodInvocation invocation) {
         String declaringClassName = invocation.getMethod().getDeclaringClass().getName();
         Method method = invocation.getMethod();
-        String name = method.getAnnotation(AsyncTimed.class).name();
-        String suffix = method.getAnnotation(AsyncTimed.class).suffix();
+        String suffix = method.getAnnotation(AsyncMetered.class).suffix();
+        String name = method.getAnnotation(AsyncMetered.class).name();
 
         if (StringUtils.isNotBlank(name)) {
             return MetricRegistry.name(declaringClassName, name, suffix);

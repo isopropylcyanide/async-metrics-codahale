@@ -11,11 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.module;
+package com.github.isopropylcyanide.asyncmetrics.module;
 
-import com.async.metrics.annotation.AsyncExceptionMetered;
-import com.async.metrics.annotation.AsyncMetered;
-import com.async.metrics.annotation.AsyncTimed;
+import com.github.isopropylcyanide.asyncmetrics.annotation.AsyncExceptionMetered;
+import com.github.isopropylcyanide.asyncmetrics.annotation.AsyncMetered;
+import com.github.isopropylcyanide.asyncmetrics.annotation.AsyncTimed;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;

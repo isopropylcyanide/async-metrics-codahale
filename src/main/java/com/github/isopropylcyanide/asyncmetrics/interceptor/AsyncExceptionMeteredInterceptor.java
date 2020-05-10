@@ -11,12 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.interceptor;
+package com.github.isopropylcyanide.asyncmetrics.interceptor;
 
-import com.async.metrics.annotation.AsyncExceptionMetered;
-import com.async.metrics.exception.AdvisedMethodException;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.github.isopropylcyanide.asyncmetrics.annotation.AsyncExceptionMetered;
+import com.github.isopropylcyanide.asyncmetrics.exception.AdvisedMethodException;
 import com.google.inject.Singleton;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.module;
+package com.github.isopropylcyanide.asyncmetrics.module;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;

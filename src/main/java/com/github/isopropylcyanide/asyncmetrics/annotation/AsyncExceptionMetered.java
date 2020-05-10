@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.async.metrics.annotation;
+package com.github.isopropylcyanide.asyncmetrics.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,33 +21,33 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for marking a method of an annotated object that returns asynchronously as metered.
+ * An annotation for marking a method of an annotated object that returns asynchronously as exceptionally metered.
  * <p>
  * Given a method like this:
  * <pre><code>
- *     {@literal @}AsyncMetered(name = "meterName")
+ *     {@literal @}AsyncExceptionMetered(name = "meterName")
  *     public CompletableFuture get(String name) {
- *         return CompletableFuture.completedFuture("Hello " + name);
+ *         return CompletableFuture.completeExceptionally(new IllegalStateException("Error"));
  *     }
  * </code></pre>
- * A meter for the defining class with the name {@code meterName} will be created and each time the
- * {@code #get(String)} method is invoked and the future is successfully resolved,
- * the meter's counter will be incremented. If method throws an exception, nothing will be marked.
+ * An exception meter for the defining class with the name {@code meterName} will be created and each time
+ * the {@code #get(String)} method is invoked and the future resolution returns in an error,
+ * the exception meter's counter will be incremented. If method returns successfully, nothing will be marked.
  * Note: If {@code meterName} is not specified, the name of the method will be used to mark
  */
 @Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-public @interface AsyncMetered {
+public @interface AsyncExceptionMetered {
 
     /**
-     * @return The name of the meter.
+     * @return The name of the exception meter.
      */
     String name() default "";
 
     /**
      * @return The suffix which will be appended for the name of the metric
      */
-    String suffix() default "meter";
+    String suffix() default "exception";
 }
