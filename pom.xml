@@ -66,7 +66,7 @@
         <apache.commons.lang.version>3.7</apache.commons.lang.version>
         <guice.version>4.2.2</guice.version>
         <mockito.version>2.23.4</mockito.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
 
         <!--Sonar / Code Coverage-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
